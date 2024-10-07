@@ -23,7 +23,7 @@ const FormSchema = z.object({
 })
 
 const Home = () => {
-  const [verifyStudent, { isLoading, data, isSuccessful }] = useLazyGetUsersQuery()
+  const [verifyStudent, { isLoading, data, isSuccess }] = useLazyGetUsersQuery()
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -82,7 +82,7 @@ const Home = () => {
         </Form>
 
         {/* Result */}
-        {isSuccessful ? (
+        {isSuccess ? (
           <Card className="w-full">
             <CardHeader>
               <CardTitle>Student details</CardTitle>
