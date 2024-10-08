@@ -1,4 +1,5 @@
 "use client"
+import { useEffect } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -23,7 +24,20 @@ const FormSchema = z.object({
 })
 
 const Home = () => {
-  const [verifyStudent, { isLoading, data, isSuccess }] = useLazyGetUsersQuery()
+  const [verifyStudent, { isLoading, data, isSuccess, isError, error }] = useLazyGetUsersQuery()
+
+  // Display error modal for when bad Network connection
+  useEffect(() => {
+    if (
+      isError &&
+      'error' in error &&
+      error?.error === 'TypeError: Failed to fetch'
+    ) {
+      toast.error("Something went wrong", {
+        description: "Something went wrong, kindly confirm you are still connected to the internet or refresh this page",
+      })
+    }
+  }, [error, isError])
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -37,10 +51,16 @@ const Home = () => {
     verifyStudent({
       email: email,
       code: code,
-    })
-    toast.success("Successful", {
-      description: "Student details should display below",
-    })
+    }).unwrap()
+      .then(() => {
+        toast.success("Successful", {
+          description: "Student details should display below",
+        })
+      }).catch((err) => {
+        toast.error("Something went wrong", {
+          description: `${err?.message ?? "Could not get student's details"}`,
+        })
+      })
   }
 
   return (

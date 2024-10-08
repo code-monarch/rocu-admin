@@ -76,3 +76,19 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+
+/* Style Overrides for Dark mode styles
+  overrides styles of HTML body since app has only a light mode design
+  resolves hidden next js errors; e.g: 404 page error
+*/
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #fff !important;
+    color: #000 !important;
+  }
+  .next-error-h1 {
+    color: #000 !important;
+    border-right: 1px solid #000 !important;
+  }
+}
